@@ -55,6 +55,24 @@ export class HeroesComponent implements OnInit {
       .subscribe(heroes => this.heroes = heroes);
   }
 
+  // Cuando el nombre no está vacio, se crea un objeto basado en el nombre del héroe.
+  // A continuación, se pasa el Heroe a addHero, cuando se crea correctamente, subscribe lo añade a la lista de héroes que se muestran por pantalla
+  add(name: string): void {
+    name = name.trim();
+    if (!name) { return; }
+    this.heroService.addHero({ name } as Hero)
+      .subscribe(hero => {
+        this.heroes.push(hero);
+      });
+  }
+
+  // Delete hero
+  // HeroService se encarga de borrarlo, pero heroesComponent se encarga de actualziar la lista
+  delete(hero: Hero): void {
+    this.heroes = this.heroes.filter(h => h !== hero);  // Borra el héroe de la lista, recorre la lista, almacenando todos menos el que coincida
+    this.heroService.deleteHero(hero.id).subscribe();   // Debemos subscribirnos aunque no devuelva valor
+  }
+
   ngOnInit(): void {
     this.getHeroes();
   }
